@@ -1,31 +1,201 @@
 # PropValuationApp
 Machine learning model to predict property prices in Pakistan using 191,394 listings. Features XGBoost, CatBoost, RandomForest ensemble (R² ~0.86), KMeans clustering, and polynomial features. Deployed as a Flask web app with Leaflet.js map. #MachineLearning #RealEstate #Python
 
-# Property Price Predictor
+# PropertyPricePredictor
 
-A machine learning model to predict property prices in Pakistan using a dataset of 153,112 real estate listings. Built with an ensemble of XGBoost, CatBoost, and RandomForest, achieving an R² score of ~0.86. Deployed as a Flask web app with a Leaflet.js map for location visualization. 🏠📍
+A machine learning model to predict property prices in Pakistan using a dataset of 153,112 real estate listings from [Kaggle](https://www.kaggle.com/datasets/huzzefakhan/zameencom-property-data-pakistan). Built with an ensemble of XGBoost, CatBoost, and RandomForest (R² ~0.86), it’s deployed as a Flask web app with a Leaflet.js map for location visualization. 🏠📍 To get results, run `split_data.py` (to process the dataset), `resave_artifacts.py` and `generate_missing_artifacts.py` (to create model files), `test_artifacts.py` (to verify files), and `app.py` (to launch the web app). The folder structure is: `data/` (for dataset and generated artifacts), `templates/` (with `index.html`), and root files (`app.py`, `predict.py`, etc.).
 
-## Features
-- Predicts property prices based on features like location, bedrooms, area (marla), etc.
-- Uses ensemble modeling (XGBoost, CatBoost, RandomForest) with feature engineering (KMeans clustering, polynomial features).
-- Interactive web app with a modern UI and map visualization.
-- Data cleaning and hyperparameter optimization for high accuracy.
+## Purpose
+This project helps buyers, sellers, and real estate agents in Pakistan estimate property prices accurately using features like location, bedrooms, and area. It’s designed to support smarter real estate decisions with a user-friendly web interface.
 
-## Dataset
-- **Source**: Real estate listings in Pakistan (153,112 samples).
-- **Files**:
-  - `data/Property_with_Feature_Engineering.csv`: Full dataset with features like `latitude`, `longitude`, `baths`, `area_marla`, `bedrooms`, `year`, `month`, `day`, `property_type`, `location`, `city`, `locality`, `purpose`.
-  - `data/X_train_raw.csv`, `data/X_test_raw.csv`, `data/y_train.npy`, `data/y_test.npy`: Pre-split training and test sets.
-- **Note**: If using `Property_with_Feature_Engineering.csv`, split it into train/test sets (80/20) to create `X_train_raw.csv`, `X_test_raw.csv`, `y_train.npy`, `y_test.npy`. Example script:
-  ```python
-  import pandas as pd
-  from sklearn.model_selection import train_test_split
-  import numpy as np
-  data = pd.read_csv('data/Property_with_Feature_Engineering.csv')
-  X = data.drop(columns=['price'])
-  y = np.log1p(data['price'])
-  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-  X_train.to_csv('data/X_train_raw.csv', index=False)
-  X_test.to_csv('data/X_test_raw.csv', index=False)
-  np.save('data/y_train.npy', y_train)
-  np.save('data/y_test.npy', y_test)
+## How It Was Made
+- **Dataset**: Uses [Zameen.com Property Data Pakistan](https://www.kaggle.com/datasets/huzzefakhan/zameencom-property-data-pakistan?select=Property_with_Feature_Engineering.csv) from Kaggle (191,394 listings).
+- **Data Processing**: Cleaned data, selected key features (e.g., `latitude`, `longitude`, `baths`, `area_marla`), and added feature engineering like KMeans clustering for location and polynomial features for interactions.
+- **Modeling**: Trained an ensemble of XGBoost, CatBoost, and RandomForest with optimized hyperparameters for an R² score of ~0.86.
+
+## Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/ouday010/PropValuationApp.git
+   cd PropertyPricePredictor
+   ```
+
+2. **Create and activate a virtual environment:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   .\venv\Scripts\activate   # Windows
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Download and process the dataset:**
+   - Download `Property_with_Feature_Engineering.csv` from Kaggle.
+   - Create a `data/` folder:
+     ```bash
+     mkdir data
+     ```
+   - Move `Property_with_Feature_Engineering.csv` to `PropertyPricePredictor/data/`.
+   - Save this script as `split_data.py` in the project root and run it to create `X_train_raw.csv`, `X_test_raw.csv`, `y_train.npy`, and `y_test.npy`:
+     ```python
+     import pandas as pd
+     from sklearn.model_selection import train_test_split
+     import numpy as np
+     data = pd.read_csv('data/Property_with_Feature_Engineering.csv')
+     X = data.drop(columns=['price'])
+     y = np.log1p(data['price'])
+     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+     X_train.to_csv('data/X_train_raw.csv', index=False)
+     X_test.to_csv('data/X_test_raw.csv', index=False)
+     np.save('data/y_train.npy', y_train)
+     np.save('data/y_test.npy', y_test)
+     ```
+     Then run:
+     ```bash
+     python split_data.py
+     ```
+
+5. **Generate model artifacts:**
+   ```bash
+   python resave_artifacts.py
+   python generate_missing_artifacts.py
+   ```
+
+6. **Verify artifacts:**
+   ```bash
+   python test_artifacts.py
+   ```
+
+## Usage
+
+This section explains how to run the Property Price Predictor web app, including the exact folder structure and files to execute.
+
+### Required Folder Structure
+
+After completing the installation, your `PropertyPricePredictor/` folder should look like this. Files marked “included” are in the GitHub repository; others are downloaded or generated.
+
+```
+PropertyPricePredictor/
+├── data/                            # Create manually, add downloaded and generated files
+│   ├── Property_with_Feature_Engineering.csv  # Download from Kaggle
+│   ├── X_train_raw.csv             # Generated by split_data.py
+│   ├── X_test_raw.csv              # Generated by split_data.py
+│   ├── y_train.npy                 # Generated by split_data.py
+│   ├── y_test.npy                  # Generated by split_data.py
+│   ├── xgboost_final_model.pkl     # Generated by resave_artifacts.py
+│   ├── catboost_final_model.pkl    # Generated by resave_artifacts.py
+│   ├── rf_final_model.pkl          # Generated by resave_artifacts.py
+│   ├── preprocessor_final.pkl      # Generated by resave_artifacts.py
+│   ├── selected_feature_indices.pkl  # Generated by resave_artifacts.py
+│   ├── ensemble_weights.pkl        # Generated by resave_artifacts.py
+│   ├── kmeans_model.pkl            # Generated by generate_missing_artifacts.py
+│   ├── poly_transformer.pkl        # Generated by generate_missing_artifacts.py
+│   ├── feature_importance.csv      # Generated by resave_artifacts.py
+├── templates/                       # Included in repository
+│   ├── index.html                   # Web app template with Bootstrap and Leaflet.js
+├── app.py                           # Flask web app (included)
+├── generate_missing_artifacts.py    # Generates KMeans and polynomial artifacts (included)
+├── predict.py                       # Prediction logic (included)
+├── resave_artifacts.py              # Trains models and generates artifacts (included)
+├── split_data.py                    # Splits dataset into train/test files (create from Installation script)
+├── test_artifacts.py                # Verifies artifacts (included)
+├── requirements.txt                 # Dependencies (included)
+├── .gitignore                       # Excludes temporary files (included)
+├── LICENSE                          # MIT License (included)
+├── README.md                        # This file (included)
+```
+
+### Steps to Run the Project
+
+Follow these steps in order to set up and launch the web app. Each script has a specific role.
+
+#### Prepare the `data/` folder:
+- Create the `data/` folder:
+  ```bash
+  mkdir data
+  ```
+- Download `Property_with_Feature_Engineering.csv` from Kaggle and place it in `data/`.
+- Run `split_data.py` to generate `X_train_raw.csv`, `X_test_raw.csv`, `y_train.npy`, and `y_test.npy` in `data/`:
+  ```bash
+  python split_data.py
+  ```
+
+#### Generate model artifacts:
+- Run `resave_artifacts.py` to train the ensemble model and generate model files in `data/`:
+  ```bash
+  python resave_artifacts.py
+  ```
+  Files generated: xgboost_final_model.pkl, catboost_final_model.pkl, rf_final_model.pkl, preprocessor_final.pkl, selected_feature_indices.pkl, ensemble_weights.pkl, feature_importance.csv  
+  Time: 5–30 minutes.
+
+- Run `generate_missing_artifacts.py` to create additional artifacts:
+  ```bash
+  python generate_missing_artifacts.py
+  ```
+  Files generated: kmeans_model.pkl, poly_transformer.pkl  
+  Time: <1 minute.
+
+#### Verify artifacts:
+- Run `test_artifacts.py` to confirm all model files load correctly:
+  ```bash
+  python test_artifacts.py
+  ```
+
+  Expected output:
+  ```
+  Loaded xgboost_final_model.pkl successfully
+  Loaded catboost_final_model.pkl successfully
+  Loaded rf_final_model.pkl successfully
+  Loaded preprocessor_final.pkl successfully
+  Loaded selected_feature_indices.pkl successfully
+  Loaded ensemble_weights.pkl successfully
+  Loaded kmeans_model.pkl successfully
+  Loaded poly_transformer.pkl successfully
+  Loaded feature_importance.csv successfully
+  ```
+
+#### Launch the Flask web app:
+- Run `app.py` to start the web server:
+  ```bash
+  python app.py
+  ```
+
+  What it does: Starts a Flask server using `predict.py` for predictions and `templates/index.html` for the UI.  
+  Expected output: Running on http://127.0.0.1:5000/.  
+  Open http://localhost:5000 in a browser.
+
+#### Use the web app:
+Enter property details in the form, e.g.:
+- Latitude: 24.85
+- Longitude: 67.02
+- Baths: 3
+- Area (Marla): 8.5
+- Bedrooms: 2
+- Year: 2024
+- Month: 6
+- Day: 15
+- Property Type: Apartment
+- Location: Clifton
+- City: Karachi
+- Locality: Clifton Block 2
+- Purpose: For Sale
+
+Click “Predict Price” to see the predicted price (e.g., “13.98 million PKR”) and a Leaflet.js map with a marker and popup showing the city, locality, and price.
+
+## Troubleshooting
+
+- **Missing dataset:** Ensure `Property_with_Feature_Engineering.csv` is in `data/` and run `split_data.py`.
+- **Artifact errors:** If `test_artifacts.py` fails, re-run `resave_artifacts.py` and `generate_missing_artifacts.py`.
+- **Flask errors:** Verify dependencies (`pip install -r requirements.txt`) and `templates/index.html`.
+- **Map issues:** Check latitude and longitude are valid.
+
+## Usefulness
+
+- **Buyers/Sellers:** Get accurate price estimates for informed decisions.
+- **Real Estate Agents:** Advise clients or set competitive prices.
+- **Developers:** Integrate into real estate CRMs or websites.
+- **Data Scientists:** Study ensemble modeling and feature engineering.
