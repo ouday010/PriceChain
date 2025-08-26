@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+*.env
+
+# CatBoost
+catboost_info/
+
+# Model artifacts
+data/xgboost_final_model.pkl
+data/catboost_final_model.pkl
+data/rf_final_model.pkl
+data/preprocessor_final.pkl
+data/selected_feature_indices.pkl
+data/ensemble_weights.pkl
+data/kmeans_model.pkl
+data/poly_transformer.pkl
+data/feature_importance.csv
+
+# IDE and OS files
+.idea/
+*.DS_Store
