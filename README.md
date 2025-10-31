@@ -22,6 +22,9 @@ GitHub: `https://github.com/YOUR_USERNAME/PriceChain`
 | **Web App** | Flask + clean UI with dropdowns (City, Type, Beds, Baths) |
 | **Real Dataset** | 191k+ listings from [Zameen.com (Kaggle)](https://www.kaggle.com/datasets/huzzefakhan/zameencom-property-data-pakistan) |
 
+## Cetification Link : 
+https://drive.google.com/file/d/11BWp5ivImBiuQ3FEGFpjtwWk6GUB7rou/view?usp=sharing
+
 ---
 
 ## Tech Stack
